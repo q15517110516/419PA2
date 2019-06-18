@@ -93,8 +93,7 @@ int main(int argc, char *argv[]) {
             if (nPacket.sequence_number == 0 && nPacket.type == 1) {
                 printf("Received packet from %s\n", inet_ntoa(echoServAddr.sin_addr));
                 memset(dataBuffer, 0, sizeof(dataBuffer));
-                strcpy(dataBuffer, nPacket.data);
-                base = 0;
+                strcpy(dataBuffer, nPacket.data);                
                 aPacket = createACKPacket(2, base);
                 // printf("%s\n", dataBuffer);
             }
@@ -115,8 +114,7 @@ int main(int argc, char *argv[]) {
             
             // if it's a terminal packet
             if (nPacket.type == 4 && sequence_number == base) {
-                base = -1;
-                aPacket = createACKPacket(8, base);
+                base = -1;                
             }
             
             // send ack to the sender
@@ -133,8 +131,7 @@ int main(int argc, char *argv[]) {
             }
             
             if (nPacket.type == 4 && base == -1) {
-                printf("Received: %s\n", dataBuffer); // show the final content
-                memset(dataBuffer, 0, sizeof(dataBuffer));
+                printf("Received: %s\n", dataBuffer); // show the final content         
                 break;
             }
         }
