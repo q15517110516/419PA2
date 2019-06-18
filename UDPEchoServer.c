@@ -96,8 +96,6 @@ int main(int argc, char *argv[]) {
         }
         
         printf("Waiting for request for file...\n");
-        /* Set the size of the in-out parameter */
-        cliAddrLen = sizeof(echoClntAddr);
         /* Block until receive message from a client */
         if ((recvMsgSize = (int)recvfrom(sock, echoBuffer, ECHOMAX, 0, (struct sockaddr *) &echoClntAddr, &cliAddrLen)) < 0)
             DieWithError("recvfrom() failed") ;
@@ -173,17 +171,14 @@ int main(int argc, char *argv[]) {
         if ((recvMsgSize = (int)recvfrom(sock, &aPacket, sizeof(aPacket), 0, (struct sockaddr *)&echoClntAddr, &cliAddrLen)) > 0) {
             if (aPacket.type == 4) {
                 printf("Retransmit the data...\n");
-                sequence_number = base + 1;            // need to do retransmission
                 while (sequence_number <= number_of_packets && (sequence_number - base) <= windowSize) {
                     NormalPacket nPacket;
                     if (sequence_number == number_of_packets) {
-                        nPacket = createTerminatePacket(sequence_number, 0);
                         printf("Sending Terminal Packet\n");
                     }
                     else {
                         char data[ECHOMAX];
                         strncpy(data, dataBuffer + sequence_number * ECHOMAX, ECHOMAX);
-                        nPacket = createNormalPacket(sequence_number, 0, data);
                         printf("Sending Packet: %d\n", sequence_number);
                     }
                     
